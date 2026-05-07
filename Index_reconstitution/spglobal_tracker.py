@@ -8,6 +8,7 @@ Posts to Discord only when a new announcement is found — silent on quiet runs.
 
 import argparse
 import os
+import re
 import sys
 import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta, timezone
@@ -27,6 +28,29 @@ _INDEX_KEYWORDS = ("S&P 500", "S&P MidCap 400", "S&P SmallCap 600")
 
 
 # ─── Helpers ──────────────────────────────────────────────────────────────────
+
+_TICKER_RE = re.compile(
+    r'(?:NYSE(?:\s+(?:American|Arca))?|NASDAQ|NASD|BATS):\s*([A-Z]{1,5}(?:\.[A-Z]{1,2})?)',
+    re.IGNORECASE,
+)
+# S&P Global's own ticker appears in every press release boilerplate — exclude it.
+_BOILERPLATE_TICKERS = {"SPGI"}
+
+
+def _fetch_tickers(url: str) -> list[str]:
+    """Fetch the press release page and extract exchange-listed tickers."""
+    try:
+        resp = get_session().get(url, headers={"User-Agent": USER_AGENT}, timeout=15)
+        resp.raise_for_status()
+        tickers = list(dict.fromkeys(
+            t.upper() for t in _TICKER_RE.findall(resp.text)
+            if t.upper() not in _BOILERPLATE_TICKERS
+        ))
+        return tickers
+    except Exception as exc:
+        print(f"[WARN] Could not fetch tickers from {url}: {exc}")
+        return []
+
 
 def _is_stale(announcement: dict) -> bool:
     """True if the announcement date is older than STALE_THRESHOLD_DAYS."""
@@ -70,20 +94,32 @@ def fetch_announcements() -> list[dict]:
 # ─── Discord ──────────────────────────────────────────────────────────────────
 
 def post_announcement(announcement: dict):
+    fields = []
+
+    tickers = announcement.get("tickers", [])
+    if tickers:
+        fields.append({
+            "name":   "🏷️  Tickers",
+            "value":  "  ".join(f"`{t}`" for t in tickers),
+            "inline": False,
+        })
+
+    fields += [
+        {"name": "📅  Announced",         "value": announcement["date"],                             "inline": True},
+        {"name": "🔗  Full Press Release", "value": f"[Read on S&P Global]({announcement['url']})", "inline": True},
+    ]
+
     embed = {
         "title":       "📢  S&P Index Change — Official Announcement",
         "description": f"**{announcement['title']}**",
         "url":         announcement["url"],
         "color":       COLOR_ALERT,
-        "fields": [
-            {"name": "📅  Announced",         "value": announcement["date"],                             "inline": True},
-            {"name": "🔗  Full Press Release", "value": f"[Read on S&P Global]({announcement['url']})", "inline": True},
-        ],
-        "footer":    {"text": "Source: S&P Global Press Room  •  Byzantium Technologies"},
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "fields":      fields,
+        "footer":      {"text": "Source: S&P Global Press Room  •  Byzantium Technologies"},
+        "timestamp":   datetime.now(timezone.utc).isoformat(),
     }
     post_embeds([embed])
-    print(f"[OK] Posted: {announcement['title']}")
+    print(f"[OK] Posted: {announcement['title']} | tickers: {tickers or 'none found'}")
 
 
 # ─── Main ─────────────────────────────────────────────────────────────────────
@@ -116,8 +152,10 @@ def main():
 
     if args.test:
         if announcements:
-            print(f"[TEST] Forcing post of: {announcements[0]['title']}")
-            post_announcement(announcements[0])
+            a = announcements[0]
+            a["tickers"] = _fetch_tickers(a["url"])
+            print(f"[TEST] Forcing post of: {a['title']}")
+            post_announcement(a)
         else:
             print("[TEST] No announcements found to test with.")
         save_state(STATE_FILE, state)
@@ -132,6 +170,11 @@ def main():
         seen_urls.update(a["url"] for a in stale_new)
         print(f"[INFO] Silently marked {len(stale_new)} stale announcement(s) as seen.")
 
+    def _enrich(announcements: list[dict]) -> list[dict]:
+        for a in announcements:
+            a["tickers"] = _fetch_tickers(a["url"])
+        return announcements
+
     def _to_kb_entries(announcements: list[dict]) -> list[dict]:
         now = datetime.now(timezone.utc).isoformat()
         return [
@@ -142,6 +185,7 @@ def main():
                 "date":        a["date"],
                 "title":       a["title"],
                 "url":         a["url"],
+                "tickers":     a.get("tickers", []),
             }
             for a in announcements
         ]
@@ -149,9 +193,10 @@ def main():
     if is_first_run and fresh_new:
         seen_urls.update(a["url"] for a in fresh_new)
         print(f"[INFO] First run: seeding {len(fresh_new)} recent announcement(s) — no Discord post.")
-        save_to_knowledge_base(_to_kb_entries(fresh_new))
+        save_to_knowledge_base(_to_kb_entries(_enrich(fresh_new)))
     elif fresh_new:
         seen_urls.update(a["url"] for a in fresh_new)
+        _enrich(fresh_new)
         for announcement in reversed(fresh_new):
             post_announcement(announcement)
         save_to_knowledge_base(_to_kb_entries(fresh_new))
