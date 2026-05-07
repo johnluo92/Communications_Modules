@@ -10,10 +10,10 @@ import argparse
 import os
 import sys
 import xml.etree.ElementTree as ET
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 
-from sp500_common import USER_AGENT, get_session, load_state, post_embeds, post_error, save_state
+from sp500_common import USER_AGENT, get_session, load_state, post_embeds, post_error, save_state, save_to_knowledge_base
 
 STATE_FILE = os.path.join(os.path.dirname(__file__), "spglobal_state.json")
 RSS_URL = "https://press.spglobal.com/index.php?s=2429&l=25&pagetemplate=rss"
@@ -21,8 +21,20 @@ RSS_URL = "https://press.spglobal.com/index.php?s=2429&l=25&pagetemplate=rss"
 _STATE_DEFAULT = {"seen_urls": [], "last_run": None}
 
 COLOR_ALERT = 0x4A90D9
+STALE_THRESHOLD_DAYS = 60
 
 _INDEX_KEYWORDS = ("S&P 500", "S&P MidCap 400", "S&P SmallCap 600")
+
+
+# ─── Helpers ──────────────────────────────────────────────────────────────────
+
+def _is_stale(announcement: dict) -> bool:
+    """True if the announcement date is older than STALE_THRESHOLD_DAYS."""
+    try:
+        dt = datetime.strptime(announcement["date"], "%B %d, %Y").replace(tzinfo=timezone.utc)
+        return dt < datetime.now(timezone.utc) - timedelta(days=STALE_THRESHOLD_DAYS)
+    except ValueError:
+        return False
 
 
 # ─── RSS ──────────────────────────────────────────────────────────────────────
@@ -112,16 +124,38 @@ def main():
         return
 
     is_first_run = not seen_urls
-    new_announcements = [a for a in announcements if a["url"] not in seen_urls]
+    all_new       = [a for a in announcements if a["url"] not in seen_urls]
+    stale_new     = [a for a in all_new if     _is_stale(a)]
+    fresh_new     = [a for a in all_new if not _is_stale(a)]
 
-    if is_first_run and new_announcements:
-        seen_urls.update(a["url"] for a in new_announcements)
-        print(f"[INFO] First run: seeding {len(new_announcements)} historical announcement(s) — no Discord post.")
-    elif new_announcements:
-        seen_urls.update(a["url"] for a in new_announcements)
-        for announcement in reversed(new_announcements):
+    if stale_new:
+        seen_urls.update(a["url"] for a in stale_new)
+        print(f"[INFO] Silently marked {len(stale_new)} stale announcement(s) as seen.")
+
+    def _to_kb_entries(announcements: list[dict]) -> list[dict]:
+        now = datetime.now(timezone.utc).isoformat()
+        return [
+            {
+                "id":          f"spglobal|{a['url']}",
+                "source":      "spglobal_pressroom",
+                "recorded_at": now,
+                "date":        a["date"],
+                "title":       a["title"],
+                "url":         a["url"],
+            }
+            for a in announcements
+        ]
+
+    if is_first_run and fresh_new:
+        seen_urls.update(a["url"] for a in fresh_new)
+        print(f"[INFO] First run: seeding {len(fresh_new)} recent announcement(s) — no Discord post.")
+        save_to_knowledge_base(_to_kb_entries(fresh_new))
+    elif fresh_new:
+        seen_urls.update(a["url"] for a in fresh_new)
+        for announcement in reversed(fresh_new):
             post_announcement(announcement)
-        print(f"[INFO] Posted {len(new_announcements)} new announcement(s).")
+        save_to_knowledge_base(_to_kb_entries(fresh_new))
+        print(f"[INFO] Posted {len(fresh_new)} new announcement(s).")
     else:
         print("[INFO] No new S&P index announcements.")
 

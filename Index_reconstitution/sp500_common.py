@@ -1,5 +1,6 @@
 import json
 import os
+import subprocess
 from datetime import datetime, timezone
 
 import requests
@@ -56,6 +57,112 @@ def post_embeds(embeds: list[dict]):
             timeout=15,
         )
         resp.raise_for_status()
+
+
+_KNOWLEDGE_BASE_DIR = os.path.expanduser(
+    "~/Desktop/Byzantium_Knowledge/Trading/Index_Reconstitution"
+)
+_KNOWLEDGE_BASE_FILE = os.path.join(_KNOWLEDGE_BASE_DIR, "reconstitutions.json")
+
+
+def save_to_knowledge_base(entries: list[dict]) -> None:
+    """Append new entries to the JSON ledger and auto-commit to git."""
+    if not entries:
+        return
+
+    os.makedirs(_KNOWLEDGE_BASE_DIR, exist_ok=True)
+
+    try:
+        with open(_KNOWLEDGE_BASE_FILE) as f:
+            existing: list[dict] = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        existing = []
+
+    existing_ids = {e["id"] for e in existing}
+    new_entries = [e for e in entries if e["id"] not in existing_ids]
+
+    if not new_entries:
+        return
+
+    existing.extend(new_entries)
+    with open(_KNOWLEDGE_BASE_FILE, "w") as f:
+        json.dump(existing, f, indent=2)
+        f.write("\n")
+
+    try:
+        subprocess.run(
+            ["git", "add", "reconstitutions.json"],
+            cwd=_KNOWLEDGE_BASE_DIR, check=True, capture_output=True,
+        )
+        date_tag = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        msg = f"data: record {len(new_entries)} reconstitution event(s) [{date_tag}]"
+        subprocess.run(
+            ["git", "commit", "-m", msg],
+            cwd=_KNOWLEDGE_BASE_DIR, check=True, capture_output=True,
+        )
+        print(f"[KB] Committed {len(new_entries)} new entry(ies) to knowledge base.")
+    except subprocess.CalledProcessError as exc:
+        stderr = exc.stderr.decode().strip() if exc.stderr else ""
+        print(f"[KB] Warning: git commit failed — {stderr}")
+
+
+_CONSTITUENTS_FILE = os.path.join(_KNOWLEDGE_BASE_DIR, "constituents.json")
+
+
+def save_constituents_to_knowledge_base(constituents: list[dict]) -> None:
+    """Overwrite constituents.json with the latest snapshot and commit if changed."""
+    if not constituents:
+        return
+
+    os.makedirs(_KNOWLEDGE_BASE_DIR, exist_ok=True)
+
+    snapshot = {
+        "as_of": datetime.now(timezone.utc).isoformat(),
+        "count": len(constituents),
+        "constituents": constituents,
+    }
+
+    new_content = json.dumps(snapshot, indent=2) + "\n"
+
+    try:
+        with open(_CONSTITUENTS_FILE) as f:
+            old_content = f.read()
+    except FileNotFoundError:
+        old_content = ""
+
+    # Only write + commit if something changed (ignore as_of timestamp noise)
+    old_tickers = {c["ticker"] for c in json.loads(old_content)["constituents"]} if old_content else set()
+    new_tickers = {c["ticker"] for c in constituents}
+    changed = old_tickers != new_tickers
+
+    with open(_CONSTITUENTS_FILE, "w") as f:
+        f.write(new_content)
+
+    if not changed and old_content:
+        print(f"[KB] Constituents unchanged ({len(constituents)} members) — no commit.")
+        return
+
+    try:
+        subprocess.run(
+            ["git", "add", "constituents.json"],
+            cwd=_KNOWLEDGE_BASE_DIR, check=True, capture_output=True,
+        )
+        date_tag = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        added   = new_tickers - old_tickers
+        removed = old_tickers - new_tickers
+        if added or removed:
+            detail = f"+{len(added)}/-{len(removed)} members"
+        else:
+            detail = f"initial snapshot, {len(constituents)} members"
+        msg = f"data: update constituents [{date_tag}] {detail}"
+        subprocess.run(
+            ["git", "commit", "-m", msg],
+            cwd=_KNOWLEDGE_BASE_DIR, check=True, capture_output=True,
+        )
+        print(f"[KB] Committed constituent snapshot ({len(constituents)} members).")
+    except subprocess.CalledProcessError as exc:
+        stderr = exc.stderr.decode().strip() if exc.stderr else ""
+        print(f"[KB] Warning: constituents git commit failed — {stderr}")
 
 
 def post_error(source_title: str, error_msg: str):
