@@ -14,6 +14,8 @@ import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 
+from bs4 import BeautifulSoup
+
 from sp500_common import USER_AGENT, get_session, load_state, post_embeds, post_error, save_state, save_to_knowledge_base
 
 STATE_FILE = os.path.join(os.path.dirname(__file__), "spglobal_state.json")
@@ -29,27 +31,71 @@ _INDEX_KEYWORDS = ("S&P 500", "S&P MidCap 400", "S&P SmallCap 600")
 
 # ─── Helpers ──────────────────────────────────────────────────────────────────
 
-_TICKER_RE = re.compile(
+_EXCHANGE_TICKER_RE = re.compile(
     r'(?:NYSE(?:\s+(?:American|Arca))?|NASDAQ|NASD|BATS):\s*([A-Z]{1,5}(?:\.[A-Z]{1,2})?)',
     re.IGNORECASE,
 )
-# S&P Global's own ticker appears in every press release boilerplate — exclude it.
 _BOILERPLATE_TICKERS = {"SPGI"}
 
 
-def _fetch_tickers(url: str) -> list[str]:
-    """Fetch the press release page and extract exchange-listed tickers."""
+def _fetch_tickers(url: str) -> dict[str, list[str]]:
+    """Fetch the press release and return {'additions': [...], 'removals': [...]}.
+
+    Parses each change bullet: '[Joiner (TICKER_A)] will replace [Leaver (TICKER_B)].
+    [Acquirer context...]' — splits on 'will replace' and ignores sentences after the
+    first to avoid picking up acquirer tickers as index members.
+    """
     try:
         resp = get_session().get(url, headers={"User-Agent": USER_AGENT}, timeout=15)
         resp.raise_for_status()
-        tickers = list(dict.fromkeys(
-            t.upper() for t in _TICKER_RE.findall(resp.text)
-            if t.upper() not in _BOILERPLATE_TICKERS
-        ))
-        return tickers
     except Exception as exc:
-        print(f"[WARN] Could not fetch tickers from {url}: {exc}")
-        return []
+        print(f"[WARN] Could not fetch press release {url}: {exc}")
+        return {"additions": [], "removals": []}
+
+    soup = BeautifulSoup(resp.text, "html.parser")
+    body = soup.find("div", class_="wd_news_body") or soup.find("div", class_="wd_body")
+
+    additions: list[str] = []
+    removals:  list[str] = []
+
+    if body:
+        # Some releases use <li> per change; others use <p> paragraphs.
+        segments = [el.get_text(strip=True) for el in body.find_all("li")]
+        if not segments:
+            segments = [
+                el.get_text(strip=True) for el in body.find_all("p")
+                if "will replace" in el.get_text(strip=True).lower()
+            ]
+
+        for text in segments:
+            idx = text.lower().find("will replace")
+            if idx == -1:
+                for m in _EXCHANGE_TICKER_RE.finditer(text):
+                    t = m.group(1).upper()
+                    if t not in _BOILERPLATE_TICKERS:
+                        additions.append(t)
+            else:
+                for m in _EXCHANGE_TICKER_RE.finditer(text[:idx]):
+                    t = m.group(1).upper()
+                    if t not in _BOILERPLATE_TICKERS:
+                        additions.append(t)
+                # Take only the first ticker after "will replace" — that's the leaver.
+                # Subsequent tickers belong to acquirer context sentences.
+                m = _EXCHANGE_TICKER_RE.search(text[idx:])
+                if m:
+                    t = m.group(1).upper()
+                    if t not in _BOILERPLATE_TICKERS:
+                        removals.append(t)
+    else:
+        for m in _EXCHANGE_TICKER_RE.finditer(resp.text):
+            t = m.group(1).upper()
+            if t not in _BOILERPLATE_TICKERS:
+                additions.append(t)
+
+    return {
+        "additions": list(dict.fromkeys(additions)),
+        "removals":  list(dict.fromkeys(removals)),
+    }
 
 
 def _is_stale(announcement: dict) -> bool:
@@ -96,12 +142,21 @@ def fetch_announcements() -> list[dict]:
 def post_announcement(announcement: dict):
     fields = []
 
-    tickers = announcement.get("tickers", [])
-    if tickers:
+    tickers = announcement.get("tickers", {})
+    additions = tickers.get("additions", [])
+    removals  = tickers.get("removals",  [])
+
+    if additions:
         fields.append({
-            "name":   "🏷️  Tickers",
-            "value":  "  ".join(f"`{t}`" for t in tickers),
-            "inline": False,
+            "name":   "✅  Joining",
+            "value":  "  ".join(f"`{t}`" for t in additions),
+            "inline": True,
+        })
+    if removals:
+        fields.append({
+            "name":   "❌  Leaving",
+            "value":  "  ".join(f"`{t}`" for t in removals),
+            "inline": True,
         })
 
     fields += [
@@ -119,7 +174,7 @@ def post_announcement(announcement: dict):
         "timestamp":   datetime.now(timezone.utc).isoformat(),
     }
     post_embeds([embed])
-    print(f"[OK] Posted: {announcement['title']} | tickers: {tickers or 'none found'}")
+    print(f"[OK] Posted: {announcement['title']} | +{additions} -{removals}")
 
 
 # ─── Main ─────────────────────────────────────────────────────────────────────
@@ -155,6 +210,7 @@ def main():
             a = announcements[0]
             a["tickers"] = _fetch_tickers(a["url"])
             print(f"[TEST] Forcing post of: {a['title']}")
+            print(f"[TEST] Tickers: {a['tickers']}")
             post_announcement(a)
         else:
             print("[TEST] No announcements found to test with.")
@@ -185,7 +241,7 @@ def main():
                 "date":        a["date"],
                 "title":       a["title"],
                 "url":         a["url"],
-                "tickers":     a.get("tickers", []),
+                "tickers":     a.get("tickers", {"additions": [], "removals": []}),
             }
             for a in announcements
         ]
