@@ -122,25 +122,25 @@ def save_constituents_to_knowledge_base(constituents: list[dict]) -> None:
         "constituents": constituents,
     }
 
-    new_content = json.dumps(snapshot, indent=2) + "\n"
-
     try:
         with open(_CONSTITUENTS_FILE) as f:
-            old_content = f.read()
-    except FileNotFoundError:
-        old_content = ""
+            old = json.load(f)
+        old_tickers = {c["ticker"] for c in old["constituents"]}
+        had_snapshot = True
+    except (FileNotFoundError, json.JSONDecodeError, KeyError, TypeError):
+        old_tickers = set()
+        had_snapshot = False
 
-    # Only write + commit if something changed (ignore as_of timestamp noise)
-    old_tickers = {c["ticker"] for c in json.loads(old_content)["constituents"]} if old_content else set()
     new_tickers = {c["ticker"] for c in constituents}
-    changed = old_tickers != new_tickers
 
-    with open(_CONSTITUENTS_FILE, "w") as f:
-        f.write(new_content)
-
-    if not changed and old_content:
+    # Membership is the payload; as_of alone is not a change. Returning before the write
+    # keeps the knowledge-base repo clean instead of dirtying it on every scheduled run.
+    if had_snapshot and old_tickers == new_tickers:
         print(f"[KB] Constituents unchanged ({len(constituents)} members) — no commit.")
         return
+
+    with open(_CONSTITUENTS_FILE, "w") as f:
+        f.write(json.dumps(snapshot, indent=2) + "\n")
 
     try:
         subprocess.run(
@@ -165,12 +165,15 @@ def save_constituents_to_knowledge_base(constituents: list[dict]) -> None:
         print(f"[KB] Warning: constituents git commit failed — {stderr}")
 
 
-def post_error(source_title: str, error_msg: str):
-    embed = {
-        "title":       f"🔴  {source_title} — Scrape Error",
-        "description": f"```{error_msg[:1800]}```",
-        "color":       COLOR_ERROR,
+def post_alert(title: str, body: str, color: int = COLOR_ERROR):
+    post_embeds([{
+        "title":       title,
+        "description": f"```{body[:1800]}```",
+        "color":       color,
         "footer":      {"text": "Byzantium Technologies"},
         "timestamp":   datetime.now(timezone.utc).isoformat(),
-    }
-    post_embeds([embed])
+    }])
+
+
+def post_error(source_title: str, error_msg: str):
+    post_alert(f"🔴  {source_title} — Scrape Error", error_msg)

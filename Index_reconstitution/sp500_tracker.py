@@ -12,17 +12,28 @@ from datetime import datetime, timedelta, timezone
 
 from bs4 import BeautifulSoup
 
-from sp500_common import USER_AGENT, get_session, load_state, post_embeds, post_error, save_state, save_to_knowledge_base, save_constituents_to_knowledge_base
+from sp500_common import USER_AGENT, get_session, load_state, post_alert, post_embeds, post_error, save_state, save_to_knowledge_base, save_constituents_to_knowledge_base
 
 STATE_FILE = os.path.join(os.path.dirname(__file__), "sp500_state.json")
-WIKIPEDIA_URL = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
+
+# Wikipedia split these into two articles on 2026-08-11 ("move to [[Historical
+# components of the S&P 500]]"), which broke a scraper that assumed both tables
+# lived on one page. Each lookup searches both pages, so a move in either
+# direction is absorbed without a code change.
+CONSTITUENTS_URL = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
+CHANGES_URL      = "https://en.wikipedia.org/wiki/Historical_components_of_the_S%26P_500"
+
 MAX_CHANGES_TO_DISPLAY = 20  # guard against scraping huge history on first run
 STALE_THRESHOLD_DAYS = 60   # changes older than this are silently marked seen, never alerted
+MIN_EXPECTED_CONSTITUENTS = 450  # a short parse means drift; refuse to overwrite the KB snapshot
+ROW_DROP_ALERT = 5  # history only grows; a shrink this large means rows were moved or lost
 
-_STATE_DEFAULT = {"seen_keys": [], "run_count": 0, "last_run": None, "last_heartbeat_month": None}
+_STATE_DEFAULT = {"seen_keys": [], "run_count": 0, "last_run": None,
+                  "last_heartbeat_month": None, "last_changes_rows": None}
 
 COLOR_ALERT     = 0xE8C547   # gold — new changes
 COLOR_HEARTBEAT = 0x2B2D31   # dark — no changes / status
+COLOR_DRIFT     = 0xE8A33D   # amber — source structure changed, not an outage
 
 
 # ─── Scraping ─────────────────────────────────────────────────────────────────
@@ -52,18 +63,54 @@ def _is_stale(date_str: str) -> bool:
     return dt < datetime.now(timezone.utc) - timedelta(days=STALE_THRESHOLD_DAYS)
 
 
+_soup_cache: dict[str, BeautifulSoup] = {}
+
+
+def _soup(url: str) -> BeautifulSoup:
+    if url not in _soup_cache:
+        resp = get_session().get(url, headers={"User-Agent": USER_AGENT}, timeout=20)
+        resp.raise_for_status()
+        _soup_cache[url] = BeautifulSoup(resp.text, "html.parser")
+    return _soup_cache[url]
+
+
+def _locate_table(label: str, table_id: str, header_hint: str, urls: list[str]):
+    """Find a wikitable by anchor id, falling back to its header text, across candidate pages.
+
+    Neither table position nor host article is stable — editors reorder tables and move
+    sections between articles. The anchor id and the header wording are the durable keys.
+    Raises with page diagnostics so the Discord error alone identifies the next drift.
+    """
+    diag = []
+    for url in urls:
+        soup = _soup(url)
+        found = soup.find("table", id=table_id)
+        if found is not None:
+            return found
+        for cand in soup.find_all("table", {"class": "wikitable"}):
+            head = cand.find("tr")
+            if head and header_hint in head.get_text(" ", strip=True).lower():
+                return cand
+        ids = [t.get("id") or "-" for t in soup.find_all("table", {"class": "wikitable"})]
+        diag.append(f"{url.rsplit('/', 1)[-1]} (wikitables: {len(ids)}, ids: {', '.join(ids) or 'none'})")
+    raise RuntimeError(
+        f"Could not locate the {label} table. Searched id='{table_id}' and a header "
+        f"containing '{header_hint}' on: {' | '.join(diag)}. "
+        "Wikipedia likely moved or restructured the table again."
+    )
+
+
+def _data_rows(table) -> list:
+    """Rows carrying actual data. Header rows are pure <th>, and these tables use one or
+    two of them (the changes table has a merged header plus a sub-header)."""
+    return [r for r in table.find_all("tr") if r.find("td") is not None]
+
+
 def fetch_constituents() -> list[dict]:
-    resp = get_session().get(WIKIPEDIA_URL, headers={"User-Agent": USER_AGENT}, timeout=20)
-    resp.raise_for_status()
+    table = _locate_table("constituents", "constituents", "symbol", [CONSTITUENTS_URL, CHANGES_URL])
 
-    soup = BeautifulSoup(resp.text, "html.parser")
-    tables = soup.find_all("table", {"class": "wikitable"})
-    if not tables:
-        raise RuntimeError("Could not locate the constituents table on Wikipedia.")
-
-    rows = tables[0].find_all("tr")
     constituents = []
-    for row in rows[1:]:  # skip header
+    for row in _data_rows(table):
         cols = row.find_all(["td", "th"])
         if len(cols) < 4:
             continue
@@ -82,19 +129,10 @@ def fetch_constituents() -> list[dict]:
 
 
 def fetch_changes() -> list[dict]:
-    resp = get_session().get(WIKIPEDIA_URL, headers={"User-Agent": USER_AGENT}, timeout=20)
-    resp.raise_for_status()
-
-    soup = BeautifulSoup(resp.text, "html.parser")
-    tables = soup.find_all("table", {"class": "wikitable"})
-    if len(tables) < 2:
-        raise RuntimeError("Could not locate the changes table on Wikipedia.")
-
-    rows = tables[1].find_all("tr")
-    data_rows = rows[2:]  # skip merged header + sub-header rows
+    table = _locate_table("changes", "changes", "effective date", [CHANGES_URL, CONSTITUENTS_URL])
 
     changes = []
-    for row in data_rows:
+    for row in _data_rows(table):
         cols = row.find_all(["td", "th"])
         if len(cols) < 4:
             continue
@@ -279,8 +317,28 @@ def main():
 
     print(f"[INFO] Found {len(all_changes)} total historical rows.")
 
+    # The changes table is append-only in practice, so a shrink means an editor moved,
+    # merged, or deleted rows — the silent half of the failure that a hard scrape error
+    # makes loud. Alert, but never block: the rows we did get are still valid.
+    prev_rows = state.get("last_changes_rows")
+    state["last_changes_rows"] = len(all_changes)
+    if prev_rows and len(all_changes) < prev_rows - ROW_DROP_ALERT:
+        drift = (f"Changes table shrank {prev_rows} → {len(all_changes)} rows since the last run.\n"
+                 f"Source: {CHANGES_URL}\nRows were moved, merged, or deleted upstream. "
+                 "Scraping continued normally.")
+        print(f"[WARN] {drift}", file=sys.stderr)
+        try:
+            post_alert("🟠  S&P 500 Tracker — Source Drift", drift, COLOR_DRIFT)
+        except Exception:
+            pass
+
     try:
         constituents = fetch_constituents()
+        if len(constituents) < MIN_EXPECTED_CONSTITUENTS:
+            raise RuntimeError(
+                f"only {len(constituents)} constituents parsed (expected ≥{MIN_EXPECTED_CONSTITUENTS}) "
+                "— refusing to overwrite the knowledge-base snapshot with a partial parse"
+            )
         print(f"[INFO] Fetched {len(constituents)} current constituents.")
         save_constituents_to_knowledge_base(constituents)
     except Exception as exc:
