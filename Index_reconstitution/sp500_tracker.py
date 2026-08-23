@@ -43,7 +43,17 @@ def _cell(cols: list, i: int) -> str:
 
 
 def _strip_footnotes(text: str) -> str:
-    return text.split("[")[0].strip()
+    """Drop the citation suffix, then any trailing pipe. Broken wiki markup leaks a literal '|'
+    into rendered cells, and '|' is the dedup-key delimiter — an unsanitised cell both corrupts
+    the key and would enter the ledger as a ticker like 'ALLE |'."""
+    return text.split("[")[0].strip().rstrip("|").strip()
+
+
+def _latest_date(changes: list[dict]) -> str | None:
+    """Newest change by effective date. Table order is editor-controlled, so the first row is not
+    reliably the newest — taking it made the reported 'Last Known Change' run backwards."""
+    dated = [(d, c["date"]) for c in changes if (d := _parse_change_date(c["date"]))]
+    return max(dated)[1] if dated else (changes[0]["date"] if changes else None)
 
 
 def _parse_change_date(date_str: str) -> datetime | None:
@@ -375,21 +385,29 @@ def main():
 
     if is_first_run and new_changes:
         seen_keys.update(c["key"] for c in fresh_new)
-        state["last_change_date"] = new_changes[0]["date"]
+        state["last_change_date"] = _latest_date(fresh_new)
         print(f"[INFO] First run: seeding {len(fresh_new)} recent change(s), no Discord post.")
         save_to_knowledge_base(_to_kb_entries(fresh_new))
         _send_heartbeat_if_due(state)
     elif new_changes:
         seen_keys.update(c["key"] for c in fresh_new)  # mark all as seen, not just displayed
-        state["last_change_date"] = new_changes[0]["date"]
+        state["last_change_date"] = _latest_date(fresh_new)
         print(f"[INFO] {len(new_changes)} new change(s) detected.")
-        post_changes(new_changes)
+        # A failed post must not cost the run's state: seen_keys is already updated, so an
+        # exception escaping here would discard it and re-post everything next week.
+        try:
+            post_changes(new_changes)
+        except Exception as exc:
+            print(f"[ERROR] Discord post failed, state still saved: {exc}", file=sys.stderr)
         save_to_knowledge_base(_to_kb_entries(fresh_new))
     else:
         print("[INFO] No new changes.")
-        _send_heartbeat_if_due(state)
+        try:
+            _send_heartbeat_if_due(state)
+        except Exception as exc:
+            print(f"[WARN] Heartbeat post failed: {exc}", file=sys.stderr)
 
-    state["seen_keys"] = list(seen_keys)
+    state["seen_keys"] = sorted(seen_keys)   # stable order — see spglobal_tracker
     save_state(STATE_FILE, state)
     print("[DONE]")
 

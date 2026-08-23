@@ -26,7 +26,11 @@ def get_session() -> requests.Session:
     global _session
     if _session is None:
         _session = requests.Session()
-        retry = Retry(total=3, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])
+        # allowed_methods=None retries EVERY method. The default set excludes POST, which made
+        # status_forcelist inert for the Discord webhook — the one POST here, and the only call
+        # that actually meets 429s.
+        retry = Retry(total=3, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504],
+                      allowed_methods=None, respect_retry_after_header=True)
         _session.mount("https://", HTTPAdapter(max_retries=retry))
     return _session
 

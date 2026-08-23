@@ -21,7 +21,7 @@ from sp500_common import USER_AGENT, get_session, load_state, post_embeds, post_
 STATE_FILE = os.path.join(os.path.dirname(__file__), "spglobal_state.json")
 RSS_URL = "https://press.spglobal.com/index.php?s=2429&l=25&pagetemplate=rss"
 
-_STATE_DEFAULT = {"seen_urls": [], "last_run": None}
+_STATE_DEFAULT = {"seen_urls": []}   # last_run dropped: written every run, read by nothing
 
 COLOR_ALERT = 0x4A90D9
 STALE_THRESHOLD_DAYS = 60
@@ -186,7 +186,6 @@ def main():
     args = parser.parse_args()
 
     state = load_state(STATE_FILE, _STATE_DEFAULT)
-    state["last_run"] = datetime.now(timezone.utc).isoformat()
     seen_urls = set(state.get("seen_urls", []))
 
     print("[INFO] Fetching S&P Global press room RSS...")
@@ -260,7 +259,9 @@ def main():
     else:
         print("[INFO] No new S&P index announcements.")
 
-    state["seen_urls"] = list(seen_urls)
+    # sorted(): set iteration order varies per process (PYTHONHASHSEED), so list() rewrote
+    # the same 22 URLs in a new order every run and produced a git diff with no content change.
+    state["seen_urls"] = sorted(seen_urls)
     save_state(STATE_FILE, state)
     print("[DONE]")
 
