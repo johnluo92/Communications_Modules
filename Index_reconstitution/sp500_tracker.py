@@ -372,14 +372,21 @@ def main():
     is_first_run = not seen_keys
     all_new = [c for c in all_changes if c["key"] not in seen_keys]
 
-    # Silently absorb stale historical entries regardless of first-run status.
-    # This prevents old Wikipedia rows from being posted if state is ever reset.
+    # Absorb stale historical entries regardless of first-run status, so old Wikipedia rows are
+    # never posted if state is reset. They are still LEDGERED — see below.
     stale_new  = [c for c in all_new if     _is_stale(c["date"])]
     fresh_new  = [c for c in all_new if not _is_stale(c["date"])]
 
     if stale_new:
         seen_keys.update(c["key"] for c in stale_new)
-        print(f"[INFO] Silently marked {len(stale_new)} stale historical change(s) as seen.")
+        # Staleness is a DISCORD-NOISE filter, never a LEDGER filter. Until 2026-08-23 this branch
+        # updated seen_keys and nothing else, so any row Wikipedia backfilled >STALE_THRESHOLD_DAYS
+        # after its effective date was permanently un-ledgerable — 6 of 8 absorbed rows were late
+        # backfills (ECHO|PAYC, effective 2026-03-23, first seen on the 2026-07-10 run: 109d lag).
+        # Tagged backfilled=true so a consumer can distinguish "we saw this late" from "this
+        # happened late", which the effective date alone cannot express.
+        save_to_knowledge_base([{**e, "backfilled": True} for e in _to_kb_entries(stale_new)])
+        print(f"[INFO] Ledgered {len(stale_new)} stale historical change(s); not posted to Discord.")
 
     new_changes = fresh_new[:MAX_CHANGES_TO_DISPLAY]
 

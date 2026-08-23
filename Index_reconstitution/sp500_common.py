@@ -63,18 +63,24 @@ def post_embeds(embeds: list[dict]):
         resp.raise_for_status()
 
 
-_KNOWLEDGE_BASE_DIR = os.path.expanduser(
-    "~/Desktop/Byzantium_Knowledge/Trading/Index_Reconstitution"
-)
+# The ledger lives NEXT TO THE TRACKER, not under ~/Desktop/Byzantium_Knowledge (relocated
+# 2026-08-23). These trackers run on GitHub Actions (ubuntu-latest); the old Mac path did not
+# exist on a runner, so os.makedirs + the JSON write both "succeeded" into a directory that died
+# with the job and the follow-up `git add` failed with "not a git repository" into a swallowed
+# print. The ledger sat frozen at its 2026-05-07 seed for three months. The Byzantium_Knowledge
+# copy also had no git remote, so no path fix alone could have worked — the runner had nowhere to
+# push. Here, the workflow's own "Commit updated state" step carries these files, and the Mac
+# picks them up with `git pull`.
+_KNOWLEDGE_BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 _KNOWLEDGE_BASE_FILE = os.path.join(_KNOWLEDGE_BASE_DIR, "reconstitutions.json")
 
 
 def save_to_knowledge_base(entries: list[dict]) -> None:
-    """Append new entries to the JSON ledger and auto-commit to git."""
+    """Append new entries to the JSON ledger, keyed on `id` so re-runs and backfills are idempotent.
+
+    Committing is the workflow's job, not this function's — see the module note above."""
     if not entries:
         return
-
-    os.makedirs(_KNOWLEDGE_BASE_DIR, exist_ok=True)
 
     try:
         with open(_KNOWLEDGE_BASE_FILE) as f:
@@ -92,33 +98,16 @@ def save_to_knowledge_base(entries: list[dict]) -> None:
     with open(_KNOWLEDGE_BASE_FILE, "w") as f:
         json.dump(existing, f, indent=2)
         f.write("\n")
-
-    try:
-        subprocess.run(
-            ["git", "add", "reconstitutions.json"],
-            cwd=_KNOWLEDGE_BASE_DIR, check=True, capture_output=True,
-        )
-        date_tag = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-        msg = f"data: record {len(new_entries)} reconstitution event(s) [{date_tag}]"
-        subprocess.run(
-            ["git", "commit", "-m", msg],
-            cwd=_KNOWLEDGE_BASE_DIR, check=True, capture_output=True,
-        )
-        print(f"[KB] Committed {len(new_entries)} new entry(ies) to knowledge base.")
-    except subprocess.CalledProcessError as exc:
-        stderr = exc.stderr.decode().strip() if exc.stderr else ""
-        print(f"[KB] Warning: git commit failed — {stderr}")
+    print(f"[KB] Recorded {len(new_entries)} new entry(ies) — ledger now {len(existing)}.")
 
 
 _CONSTITUENTS_FILE = os.path.join(_KNOWLEDGE_BASE_DIR, "constituents.json")
 
 
 def save_constituents_to_knowledge_base(constituents: list[dict]) -> None:
-    """Overwrite constituents.json with the latest snapshot and commit if changed."""
+    """Overwrite constituents.json with the latest snapshot — but only when MEMBERSHIP changed."""
     if not constituents:
         return
-
-    os.makedirs(_KNOWLEDGE_BASE_DIR, exist_ok=True)
 
     snapshot = {
         "as_of": datetime.now(timezone.utc).isoformat(),
@@ -146,27 +135,10 @@ def save_constituents_to_knowledge_base(constituents: list[dict]) -> None:
     with open(_CONSTITUENTS_FILE, "w") as f:
         f.write(json.dumps(snapshot, indent=2) + "\n")
 
-    try:
-        subprocess.run(
-            ["git", "add", "constituents.json"],
-            cwd=_KNOWLEDGE_BASE_DIR, check=True, capture_output=True,
-        )
-        date_tag = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-        added   = new_tickers - old_tickers
-        removed = old_tickers - new_tickers
-        if added or removed:
-            detail = f"+{len(added)}/-{len(removed)} members"
-        else:
-            detail = f"initial snapshot, {len(constituents)} members"
-        msg = f"data: update constituents [{date_tag}] {detail}"
-        subprocess.run(
-            ["git", "commit", "-m", msg],
-            cwd=_KNOWLEDGE_BASE_DIR, check=True, capture_output=True,
-        )
-        print(f"[KB] Committed constituent snapshot ({len(constituents)} members).")
-    except subprocess.CalledProcessError as exc:
-        stderr = exc.stderr.decode().strip() if exc.stderr else ""
-        print(f"[KB] Warning: constituents git commit failed — {stderr}")
+    added, removed = new_tickers - old_tickers, old_tickers - new_tickers
+    detail = (f"+{len(added)}/-{len(removed)} members" if (added or removed)
+              else f"initial snapshot, {len(constituents)} members")
+    print(f"[KB] Constituent snapshot updated ({len(constituents)} members, {detail}).")
 
 
 def post_alert(title: str, body: str, color: int = COLOR_ERROR):
