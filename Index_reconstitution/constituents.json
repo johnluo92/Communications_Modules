@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-05-07T22:01:45.724048+00:00",
+  "as_of": "2026-08-23T06:21:05.093174+00:00",
   "count": 503,
   "constituents": [
     {
@@ -405,8 +405,8 @@
     {
       "ticker": "APP",
       "name": "AppLovin",
-      "sector": "Information Technology",
-      "sub_industry": "Application Software",
+      "sector": "Communication Services",
+      "sub_industry": "Advertising",
       "headquarters": "Palo Alto, California",
       "date_added": "2025-09-22",
       "cik": "0001751008",
@@ -531,16 +531,6 @@
       "date_added": "1997-01-02",
       "cik": "0000866787",
       "founded": "1979"
-    },
-    {
-      "ticker": "AVB",
-      "name": "AvalonBay Communities",
-      "sector": "Real Estate",
-      "sub_industry": "Multi-Family Residential REITs",
-      "headquarters": "Arlington, Virginia",
-      "date_added": "2007-01-10",
-      "cik": "0000915912",
-      "founded": "1978"
     },
     {
       "ticker": "AVY",
@@ -683,7 +673,7 @@
       "founded": "2009"
     },
     {
-      "ticker": "BK",
+      "ticker": "BNY",
       "name": "BNY Mellon",
       "sector": "Financials",
       "sub_industry": "Asset Management & Custody Banks",
@@ -833,16 +823,6 @@
       "founded": "1981"
     },
     {
-      "ticker": "CPB",
-      "name": "Campbell's Company (The)",
-      "sector": "Consumer Staples",
-      "sub_industry": "Packaged Foods & Meats",
-      "headquarters": "Camden, New Jersey",
-      "date_added": "1957-03-04",
-      "cik": "0000016732",
-      "founded": "1869"
-    },
-    {
       "ticker": "COF",
       "name": "Capital One",
       "sector": "Financials",
@@ -864,7 +844,7 @@
     },
     {
       "ticker": "CCL",
-      "name": "Carnival",
+      "name": "Carnival Corporation",
       "sector": "Consumer Discretionary",
       "sub_industry": "Hotels, Resorts & Cruise Lines",
       "headquarters": "Miami , Florida",
@@ -1221,16 +1201,6 @@
       "date_added": "2025-12-22",
       "cik": "0001035983",
       "founded": "1997"
-    },
-    {
-      "ticker": "CAG",
-      "name": "Conagra Brands",
-      "sector": "Consumer Staples",
-      "sub_industry": "Packaged Foods & Meats",
-      "headquarters": "Chicago , Illinois",
-      "date_added": "1983-08-31",
-      "cik": "0000023217",
-      "founded": "1919"
     },
     {
       "ticker": "COP",
@@ -1625,8 +1595,8 @@
     {
       "ticker": "DD",
       "name": "DuPont",
-      "sector": "Materials",
-      "sub_industry": "Specialty Chemicals",
+      "sector": "Industrials",
+      "sub_industry": "Industrial Conglomerates",
       "headquarters": "Wilmington, Delaware",
       "date_added": "2019-06-03",
       "cik": "0001666700",
@@ -1653,7 +1623,7 @@
       "founded": "1995"
     },
     {
-      "ticker": "SATS",
+      "ticker": "ECHO",
       "name": "EchoStar",
       "sector": "Communication Services",
       "sub_industry": "Wireless Telecommunication Services",
@@ -1691,16 +1661,6 @@
       "date_added": "2011-04-01",
       "cik": "0001099800",
       "founded": "1958"
-    },
-    {
-      "ticker": "EA",
-      "name": "Electronic Arts",
-      "sector": "Communication Services",
-      "sub_industry": "Interactive Home Entertainment",
-      "headquarters": "Redwood City, California",
-      "date_added": "2002-07-22",
-      "cik": "0000712515",
-      "founded": "1982"
     },
     {
       "ticker": "ELV",
@@ -1753,16 +1713,6 @@
       "founded": "1999"
     },
     {
-      "ticker": "EPAM",
-      "name": "EPAM Systems",
-      "sector": "Information Technology",
-      "sub_industry": "IT Consulting & Other Services",
-      "headquarters": "Newtown, Pennsylvania",
-      "date_added": "2021-12-14",
-      "cik": "0001352010",
-      "founded": "1993"
-    },
-    {
       "ticker": "EQT",
       "name": "EQT Corporation",
       "sector": "Energy",
@@ -1791,16 +1741,6 @@
       "date_added": "2015-03-20",
       "cik": "0001101239",
       "founded": "1998"
-    },
-    {
-      "ticker": "EQR",
-      "name": "Equity Residential",
-      "sector": "Real Estate",
-      "sub_industry": "Multi-Family Residential REITs",
-      "headquarters": "Chicago , Illinois",
-      "date_added": "2001-12-03",
-      "cik": "0000906107",
-      "founded": "1969"
     },
     {
       "ticker": "ERIE",
@@ -1919,7 +1859,7 @@
       "sub_industry": "Integrated Oil & Gas",
       "headquarters": "Irving, Texas",
       "date_added": "1957-03-04",
-      "cik": "0000034088",
+      "cik": "0002115436",
       "founded": "1999"
     },
     {
@@ -1983,6 +1923,26 @@
       "founded": "1971"
     },
     {
+      "ticker": "FDXF",
+      "name": "FedEx Freight",
+      "sector": "Industrials",
+      "sub_industry": "Cargo Ground Transportation",
+      "headquarters": "Memphis, Tennessee",
+      "date_added": "2026-06-01",
+      "cik": "0002082247",
+      "founded": "1982"
+    },
+    {
+      "ticker": "FERG",
+      "name": "Ferguson Enterprises",
+      "sector": "Industrials",
+      "sub_industry": "Building Products",
+      "headquarters": "Newport News, Virginia",
+      "date_added": "2026-08-05",
+      "cik": "0002011641",
+      "founded": "1953"
+    },
+    {
       "ticker": "FIS",
       "name": "Fidelity National Information Services",
       "sector": "Financials",
@@ -2031,6 +1991,16 @@
       "date_added": "2001-04-02",
       "cik": "0000798354",
       "founded": "1984"
+    },
+    {
+      "ticker": "FLEX",
+      "name": "Flex Ltd.",
+      "sector": "Information Technology",
+      "sub_industry": "Electronic Manufacturing Services",
+      "headquarters": "Austin, Texas",
+      "date_added": "2026-06-22",
+      "cik": "0000866374",
+      "founded": "1969"
     },
     {
       "ticker": "F",
@@ -2166,7 +2136,7 @@
       "ticker": "GNRC",
       "name": "Generac",
       "sector": "Industrials",
-      "sub_industry": "Electrical Components & Equipment",
+      "sub_industry": "Heavy Electrical Equipment",
       "headquarters": "Waukesha, Wisconsin",
       "date_added": "2021-03-22",
       "cik": "0001474735",
@@ -2363,8 +2333,18 @@
       "founded": "1978"
     },
     {
+      "ticker": "HONA",
+      "name": "Honeywell Aerospace",
+      "sector": "Industrials",
+      "sub_industry": "Aerospace & Defense",
+      "headquarters": "Phoenix, Arizona",
+      "date_added": "2026-06-29",
+      "cik": "0002089271",
+      "founded": "1914"
+    },
+    {
       "ticker": "HON",
-      "name": "Honeywell",
+      "name": "Honeywell Technologies",
       "sector": "Industrials",
       "sub_industry": "Industrial Conglomerates",
       "headquarters": "Charlotte, North Carolina",
@@ -3023,6 +3003,16 @@
       "founded": "1993"
     },
     {
+      "ticker": "MRVL",
+      "name": "Marvell Technology",
+      "sector": "Information Technology",
+      "sub_industry": "Semiconductors",
+      "headquarters": "Santa Clara, California",
+      "date_added": "2026-06-22",
+      "cik": "0001835632",
+      "founded": "1995"
+    },
+    {
       "ticker": "MAS",
       "name": "Masco",
       "sector": "Industrials",
@@ -3264,7 +3254,7 @@
     },
     {
       "ticker": "MSCI",
-      "name": "MSCI Inc.",
+      "name": "MSCI",
       "sector": "Financials",
       "sub_industry": "Financial Exchanges & Data",
       "headquarters": "New York City , New York",
@@ -3464,7 +3454,7 @@
     },
     {
       "ticker": "ORLY",
-      "name": "O\u2019Reilly Automotive",
+      "name": "O'Reilly Automotive",
       "sector": "Consumer Discretionary",
       "sub_industry": "Automotive Retail",
       "headquarters": "Springfield, Missouri",
@@ -3703,16 +3693,6 @@
       "founded": "1845"
     },
     {
-      "ticker": "POOL",
-      "name": "Pool Corporation",
-      "sector": "Consumer Discretionary",
-      "sub_industry": "Distributors",
-      "headquarters": "Covington, Louisiana",
-      "date_added": "2020-10-07",
-      "cik": "0000945841",
-      "founded": "1993"
-    },
-    {
       "ticker": "PPG",
       "name": "PPG Industries",
       "sector": "Materials",
@@ -3881,6 +3861,16 @@
       "date_added": "2017-03-20",
       "cik": "0000720005",
       "founded": "1962"
+    },
+    {
+      "ticker": "RDDT",
+      "name": "Reddit",
+      "sector": "Communication Services",
+      "sub_industry": "Interactive Media & Services",
+      "headquarters": "San Francisco , California",
+      "date_added": "2026-08-18",
+      "cik": "0001713445",
+      "founded": "2005"
     },
     {
       "ticker": "RTX",
@@ -4771,6 +4761,16 @@
       "date_added": "2024-05-08",
       "cik": "0001692819",
       "founded": "2016"
+    },
+    {
+      "ticker": "VMRK",
+      "name": "Vivmark Residential",
+      "sector": "Real Estate",
+      "sub_industry": "Multi-Family Residential REITs",
+      "headquarters": "Chicago , Illinois",
+      "date_added": "2001-12-03",
+      "cik": "0000906107",
+      "founded": "1969"
     },
     {
       "ticker": "VMC",
