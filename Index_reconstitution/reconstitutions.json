@@ -4499,5 +4499,21 @@
     "removed_name": "QuintilesIMS",
     "reason": "QuintilesIMS changed its name to IQVIA and ticker symbol from Q to IQV.",
     "backfilled": true
+  },
+  {
+    "id": "spglobal|https://press.spglobal.com/2026-08-26-Tenable-Holdings-Set-to-Join-S-P-SmallCap-600",
+    "source": "spglobal_pressroom",
+    "recorded_at": "2026-08-28T02:20:46.333866+00:00",
+    "date": "August 26, 2026",
+    "title": "Tenable Holdings Set to Join S&P SmallCap 600",
+    "url": "https://press.spglobal.com/2026-08-26-Tenable-Holdings-Set-to-Join-S-P-SmallCap-600",
+    "tickers": {
+      "additions": [
+        "TENB"
+      ],
+      "removals": [
+        "LEG"
+      ]
+    }
   }
 ]
