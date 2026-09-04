@@ -4515,5 +4515,17 @@
         "LEG"
       ]
     }
+  },
+  {
+    "id": "spglobal|https://press.spglobal.com/2026-09-04-Bloom-Energy,-Illumina,-and-Everpure-Set-to-Join-S-P-500-Others-to-Join-S-P-100,-S-P-MidCap-400,-and-S-P-SmallCap-600",
+    "source": "spglobal_pressroom",
+    "recorded_at": "2026-09-04T23:50:07.941699+00:00",
+    "date": "September 04, 2026",
+    "title": "Bloom Energy, Illumina, and Everpure Set to Join S&P 500; Others to Join S&P 100, S&P MidCap 400, and S&P SmallCap 600",
+    "url": "https://press.spglobal.com/2026-09-04-Bloom-Energy,-Illumina,-and-Everpure-Set-to-Join-S-P-500-Others-to-Join-S-P-100,-S-P-MidCap-400,-and-S-P-SmallCap-600",
+    "tickers": {
+      "additions": [],
+      "removals": []
+    }
   }
 ]
