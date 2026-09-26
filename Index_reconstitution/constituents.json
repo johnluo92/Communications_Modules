@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-08-23T06:21:05.093174+00:00",
+  "as_of": "2026-09-26T01:09:10.678512+00:00",
   "count": 503,
   "constituents": [
     {
@@ -673,6 +673,16 @@
       "founded": "2009"
     },
     {
+      "ticker": "BE",
+      "name": "Bloom Energy",
+      "sector": "Industrials",
+      "sub_industry": "Electrical Components & Equipment",
+      "headquarters": "San Jose, California",
+      "date_added": "2026-09-21",
+      "cik": "0001664703",
+      "founded": "2001"
+    },
+    {
       "ticker": "BNY",
       "name": "BNY Mellon",
       "sector": "Financials",
@@ -680,7 +690,7 @@
       "headquarters": "New York City , New York",
       "date_added": "1995-03-31",
       "cik": "0001390777",
-      "founded": "1784"
+      "founded": "2007 (1784)"
     },
     {
       "ticker": "BA",
@@ -761,16 +771,6 @@
       "date_added": "1982-10-31",
       "cik": "0000014693",
       "founded": "1870"
-    },
-    {
-      "ticker": "BLDR",
-      "name": "Builders FirstSource",
-      "sector": "Industrials",
-      "sub_industry": "Building Products",
-      "headquarters": "Irving, Texas",
-      "date_added": "2023-12-18",
-      "cik": "0001316835",
-      "founded": "1998"
     },
     {
       "ticker": "BG",
@@ -1793,6 +1793,16 @@
       "founded": "1909"
     },
     {
+      "ticker": "P",
+      "name": "Everpure",
+      "sector": "Information Technology",
+      "sub_industry": "Technology Hardware, Storage & Peripherals",
+      "headquarters": "Santa Clara, California",
+      "date_added": "2026-09-21",
+      "cik": "0001474432",
+      "founded": "2009"
+    },
+    {
       "ticker": "ES",
       "name": "Eversource Energy",
       "sector": "Utilities",
@@ -1936,7 +1946,7 @@
       "ticker": "FERG",
       "name": "Ferguson Enterprises",
       "sector": "Industrials",
-      "sub_industry": "Building Products",
+      "sub_industry": "Trading Companies & Distributors",
       "headquarters": "Newport News, Virginia",
       "date_added": "2026-08-05",
       "cik": "0002011641",
@@ -2471,6 +2481,16 @@
       "date_added": "1986-02-28",
       "cik": "0000049826",
       "founded": "1912"
+    },
+    {
+      "ticker": "ILMN",
+      "name": "Illumina, Inc.",
+      "sector": "Health Care",
+      "sub_industry": "Life Sciences Tools & Services",
+      "headquarters": "San Diego , California",
+      "date_added": "2026-09-21",
+      "cik": "0001110803",
+      "founded": "1998"
     },
     {
       "ticker": "INCY",
@@ -3171,16 +3191,6 @@
       "date_added": "2021-07-21",
       "cik": "0001682852",
       "founded": "2010"
-    },
-    {
-      "ticker": "TAP",
-      "name": "Molson Coors Beverage Company",
-      "sector": "Consumer Staples",
-      "sub_industry": "Brewers",
-      "headquarters": "Chicago , Illinois",
-      "date_added": "1976-06-30",
-      "cik": "0000024545",
-      "founded": "2005 (Molson 1786, Coors 1873)"
     },
     {
       "ticker": "MDLZ",
@@ -4441,16 +4451,6 @@
       "date_added": "2025-03-24",
       "cik": "0001973266",
       "founded": "2023"
-    },
-    {
-      "ticker": "TTD",
-      "name": "Trade Desk (The)",
-      "sector": "Communication Services",
-      "sub_industry": "Advertising",
-      "headquarters": "Ventura, California",
-      "date_added": "2025-07-18",
-      "cik": "0001671933",
-      "founded": "2009"
     },
     {
       "ticker": "TSCO",

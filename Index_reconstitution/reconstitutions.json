@@ -4527,5 +4527,38 @@
       "additions": [],
       "removals": []
     }
+  },
+  {
+    "id": "sp500|September 21, 2026|BE|TAP",
+    "source": "sp500_wikipedia",
+    "recorded_at": "2026-09-26T01:09:12.045891+00:00",
+    "date": "September 21, 2026",
+    "added_ticker": "BE",
+    "added_name": "Bloom Energy",
+    "removed_ticker": "TAP",
+    "removed_name": "Molson Coors",
+    "reason": "Market capitalization changes."
+  },
+  {
+    "id": "sp500|September 21, 2026|P|TTD",
+    "source": "sp500_wikipedia",
+    "recorded_at": "2026-09-26T01:09:12.045891+00:00",
+    "date": "September 21, 2026",
+    "added_ticker": "P",
+    "added_name": "Everpure",
+    "removed_ticker": "TTD",
+    "removed_name": "The Trade Desk",
+    "reason": "Market capitalization changes."
+  },
+  {
+    "id": "sp500|September 21, 2026|ILMN|BLDR",
+    "source": "sp500_wikipedia",
+    "recorded_at": "2026-09-26T01:09:12.045891+00:00",
+    "date": "September 21, 2026",
+    "added_ticker": "ILMN",
+    "added_name": "Illumina, Inc.",
+    "removed_ticker": "BLDR",
+    "removed_name": "Builders FirstSource",
+    "reason": "Market capitalization changes."
   }
 ]
