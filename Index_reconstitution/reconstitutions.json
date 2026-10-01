@@ -4560,5 +4560,24 @@
     "removed_ticker": "BLDR",
     "removed_name": "Builders FirstSource",
     "reason": "Market capitalization changes."
+  },
+  {
+    "id": "spglobal|https://press.spglobal.com/2026-10-01-Vylor-Added-to-the-S-P-500-Twilio-Set-to-Join-S-P-500-Others-to-Join-S-P-MidCap-400-and-S-P-SmallCap-600",
+    "source": "spglobal_pressroom",
+    "recorded_at": "2026-10-01T23:02:11.810295+00:00",
+    "date": "October 01, 2026",
+    "title": "Vylor Added to the S&P 500; Twilio Set to Join S&P 500; Others to Join S&P MidCap 400 and S&P SmallCap 600",
+    "url": "https://press.spglobal.com/2026-10-01-Vylor-Added-to-the-S-P-500-Twilio-Set-to-Join-S-P-500-Others-to-Join-S-P-MidCap-400-and-S-P-SmallCap-600",
+    "tickers": {
+      "additions": [
+        "VYLR",
+        "CTVA",
+        "TWLO"
+      ],
+      "removals": [
+        "OLN",
+        "WBD"
+      ]
+    }
   }
 ]
