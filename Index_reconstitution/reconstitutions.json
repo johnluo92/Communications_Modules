@@ -4579,5 +4579,21 @@
         "WBD"
       ]
     }
+  },
+  {
+    "id": "spglobal|https://press.spglobal.com/2026-10-05-Freshworks-Set-to-Join-S-P-SmallCap-600",
+    "source": "spglobal_pressroom",
+    "recorded_at": "2026-10-06T01:50:21.613509+00:00",
+    "date": "October 05, 2026",
+    "title": "Freshworks Set to Join S&P SmallCap 600",
+    "url": "https://press.spglobal.com/2026-10-05-Freshworks-Set-to-Join-S-P-SmallCap-600",
+    "tickers": {
+      "additions": [
+        "FRSH"
+      ],
+      "removals": [
+        "BLFS"
+      ]
+    }
   }
 ]
