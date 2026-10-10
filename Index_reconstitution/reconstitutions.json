@@ -4595,5 +4595,38 @@
         "BLFS"
       ]
     }
+  },
+  {
+    "id": "sp500|October 6, 2026|TWLO|WBD",
+    "source": "sp500_wikipedia",
+    "recorded_at": "2026-10-10T02:02:20.661814+00:00",
+    "date": "October 6, 2026",
+    "added_ticker": "TWLO",
+    "added_name": "Twilio",
+    "removed_ticker": "WBD",
+    "removed_name": "Warner Bros. Discovery",
+    "reason": "Paramount Skydance acquired Warner Bros. Discovery"
+  },
+  {
+    "id": "sp500|October 6, 2026||CTVA",
+    "source": "sp500_wikipedia",
+    "recorded_at": "2026-10-10T02:02:20.661814+00:00",
+    "date": "October 6, 2026",
+    "added_ticker": "",
+    "added_name": "",
+    "removed_ticker": "CTVA",
+    "removed_name": "Corteva",
+    "reason": "Market capitalization changes."
+  },
+  {
+    "id": "sp500|October 1, 2026|VYLR|",
+    "source": "sp500_wikipedia",
+    "recorded_at": "2026-10-10T02:02:20.661814+00:00",
+    "date": "October 1, 2026",
+    "added_ticker": "VYLR",
+    "added_name": "Vylor",
+    "removed_ticker": "",
+    "removed_name": "",
+    "reason": "Corteva completed the corporate spin-off of Vylor"
   }
 ]

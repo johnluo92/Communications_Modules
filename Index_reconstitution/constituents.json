@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-09-26T01:09:10.678512+00:00",
+  "as_of": "2026-10-10T02:02:19.896407+00:00",
   "count": 503,
   "constituents": [
     {
@@ -1281,16 +1281,6 @@
       "date_added": "2018-06-20",
       "cik": "0001175454",
       "founded": "2000"
-    },
-    {
-      "ticker": "CTVA",
-      "name": "Corteva",
-      "sector": "Materials",
-      "sub_industry": "Fertilizers & Agricultural Chemicals",
-      "headquarters": "Indianapolis , Indiana",
-      "date_added": "2019-06-03",
-      "cik": "0001755672",
-      "founded": "2019"
     },
     {
       "ticker": "CSGP",
@@ -3583,16 +3573,6 @@
       "founded": "2005"
     },
     {
-      "ticker": "PSKY",
-      "name": "Paramount Skydance Corporation",
-      "sector": "Communication Services",
-      "sub_industry": "Movies & Entertainment",
-      "headquarters": "Los Angeles , California",
-      "date_added": "1994-09-30",
-      "cik": "0002041610",
-      "founded": "2025 ( Paramount Pictures 1912)"
-    },
-    {
       "ticker": "PH",
       "name": "Parker Hannifin",
       "sector": "Industrials",
@@ -4123,6 +4103,16 @@
       "founded": "2003"
     },
     {
+      "ticker": "SKYD",
+      "name": "Skydance Corporation",
+      "sector": "Communication Services",
+      "sub_industry": "Movies & Entertainment",
+      "headquarters": "New York City , New York",
+      "date_added": "1994-09-30",
+      "cik": "0002041610",
+      "founded": "2025 ( Paramount Pictures 1912)"
+    },
+    {
       "ticker": "SWKS",
       "name": "Skyworks Solutions",
       "sector": "Information Technology",
@@ -4513,6 +4503,16 @@
       "founded": "1872"
     },
     {
+      "ticker": "TWLO",
+      "name": "Twilio",
+      "sector": "Information Technology",
+      "sub_industry": "Systems Software",
+      "headquarters": "San Francisco , California",
+      "date_added": "2026-10-06",
+      "cik": "0001447669",
+      "founded": "2008"
+    },
+    {
       "ticker": "TYL",
       "name": "Tyler Technologies",
       "sector": "Information Technology",
@@ -4783,6 +4783,16 @@
       "founded": "1909"
     },
     {
+      "ticker": "VYLR",
+      "name": "Vylor",
+      "sector": "Consumer Staples",
+      "sub_industry": "Agricultural Products & Services",
+      "headquarters": "Johnston, Iowa",
+      "date_added": "2026-10-01",
+      "cik": "0002128626",
+      "founded": "2026"
+    },
+    {
       "ticker": "WRB",
       "name": "W. R. Berkley Corporation",
       "sector": "Financials",
@@ -4831,16 +4841,6 @@
       "date_added": "1976-06-30",
       "cik": "0001744489",
       "founded": "1923"
-    },
-    {
-      "ticker": "WBD",
-      "name": "Warner Bros. Discovery",
-      "sector": "Communication Services",
-      "sub_industry": "Broadcasting",
-      "headquarters": "New York City , New York",
-      "date_added": "2022-04-11",
-      "cik": "0001437107",
-      "founded": "2022 ( Warner Bros. 1923)"
     },
     {
       "ticker": "WM",

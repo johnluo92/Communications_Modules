@@ -341,6 +341,7 @@
     "October 1, 2012|PNR|DV",
     "October 1, 2018|ROL|ANDV",
     "October 1, 2024||BBWI",
+    "October 1, 2026|VYLR|",
     "October 10, 2012|PETM|SUN",
     "October 11, 2018|FTNT|EVHC",
     "October 12, 2020||NBL",
@@ -363,6 +364,8 @@
     "October 31, 2011|XYL|ITT",
     "October 31, 2011|XYL|ITT |",
     "October 31, 2025||KMX",
+    "October 6, 2026|TWLO|WBD",
+    "October 6, 2026||CTVA",
     "October 7, 2015|VRSK|JOY",
     "October 7, 2020|POOL|ETFC",
     "October 9, 2020|VNT|",
@@ -416,9 +419,9 @@
     "September 6, 2016|MTD|TYC",
     "September 8, 2016|CHTR|EMC"
   ],
-  "run_count": 28,
-  "last_run": "2026-10-03T01:41:45.088542+00:00",
-  "last_change_date": "September 21, 2026",
+  "run_count": 29,
+  "last_run": "2026-10-10T02:02:19.336882+00:00",
+  "last_change_date": "October 6, 2026",
   "last_heartbeat_month": "2026-10",
-  "last_changes_rows": 409
+  "last_changes_rows": 412
 }
