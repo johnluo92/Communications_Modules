@@ -4628,5 +4628,25 @@
     "removed_ticker": "",
     "removed_name": "",
     "reason": "Corteva completed the corporate spin-off of Vylor"
+  },
+  {
+    "id": "spglobal|https://press.spglobal.com/2026-10-22-MSG-Rangers-and-Huron-Consulting-Group-Set-to-Join-S-P-SmallCap-600",
+    "source": "spglobal_pressroom",
+    "recorded_at": "2026-10-23T00:05:12.765934+00:00",
+    "date": "October 22, 2026",
+    "title": "MSG Rangers and Huron Consulting Group Set to Join S&P SmallCap 600",
+    "url": "https://press.spglobal.com/2026-10-22-MSG-Rangers-and-Huron-Consulting-Group-Set-to-Join-S-P-SmallCap-600",
+    "tickers": {
+      "additions": [
+        "MSGR",
+        "ABR",
+        "MSGS",
+        "MSGK",
+        "HURN"
+      ],
+      "removals": [
+        "SUPN"
+      ]
+    }
   }
 ]
