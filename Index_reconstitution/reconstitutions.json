@@ -4648,5 +4648,21 @@
         "SUPN"
       ]
     }
+  },
+  {
+    "id": "spglobal|https://press.spglobal.com/2026-10-23-Howard-Hughes-Holdings-Set-to-Join-S-P-SmallCap-600",
+    "source": "spglobal_pressroom",
+    "recorded_at": "2026-10-23T23:56:11.293411+00:00",
+    "date": "October 23, 2026",
+    "title": "Howard Hughes Holdings Set to Join S&P SmallCap 600",
+    "url": "https://press.spglobal.com/2026-10-23-Howard-Hughes-Holdings-Set-to-Join-S-P-SmallCap-600",
+    "tickers": {
+      "additions": [
+        "HHH"
+      ],
+      "removals": [
+        "ACA"
+      ]
+    }
   }
 ]
