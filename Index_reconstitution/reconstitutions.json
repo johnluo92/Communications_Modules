@@ -4664,5 +4664,21 @@
         "ACA"
       ]
     }
+  },
+  {
+    "id": "spglobal|https://press.spglobal.com/2026-10-27-AvePoint-Set-to-Join-S-P-SmallCap-600",
+    "source": "spglobal_pressroom",
+    "recorded_at": "2026-10-27T22:53:31.562995+00:00",
+    "date": "October 27, 2026",
+    "title": "AvePoint Set to Join S&P SmallCap 600",
+    "url": "https://press.spglobal.com/2026-10-27-AvePoint-Set-to-Join-S-P-SmallCap-600",
+    "tickers": {
+      "additions": [
+        "AVPT"
+      ],
+      "removals": [
+        "LXP"
+      ]
+    }
   }
 ]
