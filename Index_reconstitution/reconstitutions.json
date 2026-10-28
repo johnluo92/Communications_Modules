@@ -4680,5 +4680,21 @@
         "LXP"
       ]
     }
+  },
+  {
+    "id": "spglobal|https://press.spglobal.com/2026-10-28-Updated-Effective-Date-Huron-Consulting-Group-Set-to-Join-S-P-SmallCap-600",
+    "source": "spglobal_pressroom",
+    "recorded_at": "2026-10-28T23:01:13.576130+00:00",
+    "date": "October 28, 2026",
+    "title": "Updated Effective Date: Huron Consulting Group Set to Join S&P SmallCap 600",
+    "url": "https://press.spglobal.com/2026-10-28-Updated-Effective-Date-Huron-Consulting-Group-Set-to-Join-S-P-SmallCap-600",
+    "tickers": {
+      "additions": [
+        "HURN"
+      ],
+      "removals": [
+        "SUPN"
+      ]
+    }
   }
 ]
