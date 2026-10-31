@@ -4714,5 +4714,65 @@
         "RAMP"
       ]
     }
+  },
+  {
+    "id": "sp500|March 20, 2019||TFCFA",
+    "source": "sp500_wikipedia",
+    "recorded_at": "2026-10-31T01:57:55.927904+00:00",
+    "date": "March 20, 2019",
+    "added_ticker": "",
+    "added_name": "",
+    "removed_ticker": "TFCFA",
+    "removed_name": "21st Century Fox",
+    "reason": "21st Century Fox's Class A shares changed ticker from FOXA to TFCFA effective March 19; the company was removed from the index on March 20.",
+    "backfilled": true
+  },
+  {
+    "id": "sp500|March 20, 2019||TFCF",
+    "source": "sp500_wikipedia",
+    "recorded_at": "2026-10-31T01:57:55.927904+00:00",
+    "date": "March 20, 2019",
+    "added_ticker": "",
+    "added_name": "",
+    "removed_ticker": "TFCF",
+    "removed_name": "21st Century Fox",
+    "reason": "21st Century Fox's Class B shares changed ticker from FOX to TFCF effective March 19; the company was removed from the index on March 20.",
+    "backfilled": true
+  },
+  {
+    "id": "sp500|March 19, 2019|FOXA|",
+    "source": "sp500_wikipedia",
+    "recorded_at": "2026-10-31T01:57:55.927904+00:00",
+    "date": "March 19, 2019",
+    "added_ticker": "FOXA",
+    "added_name": "Fox Corporation",
+    "removed_ticker": "",
+    "removed_name": "",
+    "reason": "Fox Corporation was added following its spin-off from 21st Century Fox.",
+    "backfilled": true
+  },
+  {
+    "id": "sp500|March 19, 2019|FOX|",
+    "source": "sp500_wikipedia",
+    "recorded_at": "2026-10-31T01:57:55.927904+00:00",
+    "date": "March 19, 2019",
+    "added_ticker": "FOX",
+    "added_name": "Fox Corporation",
+    "removed_ticker": "",
+    "removed_name": "",
+    "reason": "Fox Corporation was added following its spin-off from 21st Century Fox.",
+    "backfilled": true
+  },
+  {
+    "id": "sp500|April 8, 2016|UA.C|",
+    "source": "sp500_wikipedia",
+    "recorded_at": "2026-10-31T01:57:55.927904+00:00",
+    "date": "April 8, 2016",
+    "added_ticker": "UA.C",
+    "added_name": "Under Armour (Class C)",
+    "removed_ticker": "",
+    "removed_name": "",
+    "reason": "Under Armour distribution of second class of stock.",
+    "backfilled": true
   }
 ]
