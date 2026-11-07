@@ -4790,5 +4790,28 @@
         "ROKU"
       ]
     }
+  },
+  {
+    "id": "sp500|March 3, 2020|IR|XEC",
+    "source": "sp500_wikipedia",
+    "recorded_at": "2026-11-07T02:30:32.531016+00:00",
+    "date": "March 3, 2020",
+    "added_ticker": "IR",
+    "added_name": "Ingersoll Rand",
+    "removed_ticker": "XEC",
+    "removed_name": "Cimarex Energy",
+    "reason": "Gardner Denver acquired Ingersoll Rand 's industrial businesses then changed its name to the \"new\" Ingersoll Rand Inc.",
+    "backfilled": true
+  },
+  {
+    "id": "sp500|October 30, 2026|OKTA|KVUE",
+    "source": "sp500_wikipedia",
+    "recorded_at": "2026-11-07T02:30:33.221096+00:00",
+    "date": "October 30, 2026",
+    "added_ticker": "OKTA",
+    "added_name": "Okta, Inc.",
+    "removed_ticker": "KVUE",
+    "removed_name": "Kenvue",
+    "reason": "S&P 500 constituent Kimberly-Clark acquired Kenvue."
   }
 ]
