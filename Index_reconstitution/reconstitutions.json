@@ -4774,5 +4774,21 @@
     "removed_name": "",
     "reason": "Under Armour distribution of second class of stock.",
     "backfilled": true
+  },
+  {
+    "id": "spglobal|https://press.spglobal.com/2026-11-06-James-Hardie-Industries-Set-to-Join-S-P-MidCap-400",
+    "source": "spglobal_pressroom",
+    "recorded_at": "2026-11-07T00:00:01.281381+00:00",
+    "date": "November 06, 2026",
+    "title": "James Hardie Industries Set to Join S&P MidCap 400",
+    "url": "https://press.spglobal.com/2026-11-06-James-Hardie-Industries-Set-to-Join-S-P-MidCap-400",
+    "tickers": {
+      "additions": [
+        "JHX"
+      ],
+      "removals": [
+        "ROKU"
+      ]
+    }
   }
 ]
