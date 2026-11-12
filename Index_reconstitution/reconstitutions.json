@@ -4813,5 +4813,21 @@
     "removed_ticker": "KVUE",
     "removed_name": "Kenvue",
     "reason": "S&P 500 constituent Kimberly-Clark acquired Kenvue."
+  },
+  {
+    "id": "spglobal|https://press.spglobal.com/2026-11-11-Ingram-Micro-Holding-Set-to-Join-S-P-SmallCap-600",
+    "source": "spglobal_pressroom",
+    "recorded_at": "2026-11-12T01:58:20.021875+00:00",
+    "date": "November 11, 2026",
+    "title": "Ingram Micro Holding Set to Join S&P SmallCap 600",
+    "url": "https://press.spglobal.com/2026-11-11-Ingram-Micro-Holding-Set-to-Join-S-P-SmallCap-600",
+    "tickers": {
+      "additions": [
+        "INGM"
+      ],
+      "removals": [
+        "PCRX"
+      ]
+    }
   }
 ]
