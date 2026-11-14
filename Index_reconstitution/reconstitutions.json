@@ -4829,5 +4829,21 @@
         "PCRX"
       ]
     }
+  },
+  {
+    "id": "spglobal|https://press.spglobal.com/2026-11-13-Chime-Financial-Set-to-Join-S-P-MidCap-400",
+    "source": "spglobal_pressroom",
+    "recorded_at": "2026-11-14T00:58:18.217678+00:00",
+    "date": "November 13, 2026",
+    "title": "Chime Financial Set to Join S&P MidCap 400",
+    "url": "https://press.spglobal.com/2026-11-13-Chime-Financial-Set-to-Join-S-P-MidCap-400",
+    "tickers": {
+      "additions": [
+        "CHYM"
+      ],
+      "removals": [
+        "NWE"
+      ]
+    }
   }
 ]
