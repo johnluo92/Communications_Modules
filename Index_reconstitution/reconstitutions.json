@@ -4845,5 +4845,21 @@
         "NWE"
       ]
     }
+  },
+  {
+    "id": "spglobal|https://press.spglobal.com/2026-11-16-SiteOne-Landscape-Supply-Set-to-Join-S-P-SmallCap-600",
+    "source": "spglobal_pressroom",
+    "recorded_at": "2026-11-17T21:36:55.799500+00:00",
+    "date": "November 16, 2026",
+    "title": "SiteOne Landscape Supply Set to Join S&P SmallCap 600",
+    "url": "https://press.spglobal.com/2026-11-16-SiteOne-Landscape-Supply-Set-to-Join-S-P-SmallCap-600",
+    "tickers": {
+      "additions": [
+        "SITE"
+      ],
+      "removals": [
+        "ITGR"
+      ]
+    }
   }
 ]
