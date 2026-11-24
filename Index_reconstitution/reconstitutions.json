@@ -4881,5 +4881,21 @@
         "HZO"
       ]
     }
+  },
+  {
+    "id": "spglobal|https://press.spglobal.com/2026-11-24-Centuri-Holdings-Set-to-Join-S-P-SmallCap-600",
+    "source": "spglobal_pressroom",
+    "recorded_at": "2026-11-24T22:56:59.163417+00:00",
+    "date": "November 24, 2026",
+    "title": "Centuri Holdings Set to Join S&P SmallCap 600",
+    "url": "https://press.spglobal.com/2026-11-24-Centuri-Holdings-Set-to-Join-S-P-SmallCap-600",
+    "tickers": {
+      "additions": [
+        "CTRI"
+      ],
+      "removals": [
+        "DV"
+      ]
+    }
   }
 ]
